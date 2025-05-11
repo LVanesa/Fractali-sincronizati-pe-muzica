@@ -21,10 +21,13 @@ Acest proiect îmbină arta vizuală generativă cu muzica, prin afișarea unui 
 ## 🔍 Preview  
 
 <p align="center">
-  <img src="preview1.jpg" alt="Fractal 1" height="300">
-  <img src="preview2.jpg" alt="Fractal 2" height="300">
-  <img src="preview3.jpg" alt="Fractal 3" height="300">
+  <img src="static/images/page1_fractal.png" alt="Fractal 1" width="90%">
 </p>
+
+<p align="center">
+  <img src="static/images/page3_fractals.png" alt="Fractal 3" width="90%">
+</p>
+
 
 ---
 
