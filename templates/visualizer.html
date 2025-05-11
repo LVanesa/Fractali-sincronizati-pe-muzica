@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Mandelbulb Audio-Reactive cu Boom Detection</title>
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(0,0,0,0.7);
+            padding: 15px;
+            border-radius: 5px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #status {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            z-index: 100;
+            background: rgba(0,0,0,0.8);
+            padding: 20px 40px;
+            border-radius: 10px;
+        }
+        audio {
+            display: none;
+        }
+        .home-btn {
+            background: #2196F3;
+        }
+        .home-btn:hover {
+            background: #0b7dda;
+        }
+        #stats {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .icon {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button id="play-btn"><span class="icon">▶</span> Play</button>
+        <button id="pause-btn" style="display:none;"><span class="icon">⏸</span> Pauză</button>
+        <button id="home-btn" class="home-btn"><span class="icon">←</span> Înapoi la încărcare</button>
+        <div id="status">Apasă Play pentru a începe</div>
+    </div>
+    
+    <div id="loading">Se încarcă vizualizatorul...</div>
+    
+    <div id="stats"></div>
+    
+    <audio id="audio" src="{{ url_for('uploaded_file', filename=audio_file) }}"></audio>
+    
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+    <script src="{{ url_for('static', filename='js/fractal.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // timeout 2sec pt msj incarcare
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+            }, 2000);
+            
+            const audioEl = document.getElementById('audio');
+            const playBtn = document.getElementById('play-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const homeBtn = document.getElementById('home-btn');
+            const statusEl = document.getElementById('status');
+            const statsEl = document.getElementById('stats');
+            
+            // afisare statistici audio
+            function updateStats(bass, treble, boom) {
+                statsEl.innerHTML = `
+                    Bas: ${Math.round(bass * 100)}% | 
+                    Frecvențe înalte: ${Math.round(treble * 100)}% 
+                `;
+            }
+            
+            // expunem functia pt statistici
+            window.updateVisualStats = updateStats;
+            
+            let visualizerRunning = false;
+            
+            playBtn.addEventListener('click', () => {
+                // start audio si fractal
+                audioEl.play();
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'block';
+                
+                // ne asiguram ca porneste
+                if (!visualizerRunning && window.initVisualizer) {
+                    window.initVisualizer();
+                    visualizerRunning = true;
+                }
+            });
+            
+            pauseBtn.addEventListener('click', () => {
+                audioEl.pause();
+                pauseBtn.style.display = 'none';
+                playBtn.style.display = 'block';
+                
+                // nu oprim, marcam pauza
+                statusEl.textContent = 'Pauză';
+            });
+            
+            homeBtn.addEventListener('click', () => {
+                // curatam complet vizualizatorul inainte de a ne intoarce
+                if (window.stopVisualizer) {
+                    window.stopVisualizer();
+                    visualizerRunning = false;
+                }
+                window.location.href = '/';
+            });
+            
+            // handle vizualizare
+            audioEl.addEventListener('play', () => {
+                statusEl.textContent = 'Redare în curs...';
+                if (!visualizerRunning && window.initVisualizer) {
+                    window.initVisualizer();
+                    visualizerRunning = true;
+                }
+            });
+            
+            audioEl.addEventListener('pause', () => {
+                statusEl.textContent = 'Pauză';
+                // nu oprim, marcam pauza
+            });
+            
+            audioEl.addEventListener('ended', () => {
+                statusEl.textContent = 'Redarea s-a terminat';
+                playBtn.style.display = 'block';
+                pauseBtn.style.display = 'none';
+                
+                // oprim vizualizatorul complet doar cand se termina
+                if (window.stopVisualizer) {
+                    window.stopVisualizer();
+                    visualizerRunning = false;
+                }
+            });
+            
+            // curatam complet vizualizatorul 
+            window.addEventListener('beforeunload', () => {
+                if (window.stopVisualizer) {
+                    window.stopVisualizer();
+                    visualizerRunning = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

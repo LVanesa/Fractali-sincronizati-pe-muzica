@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Mandelbulb Audio-Reactive cu Boom Detection</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .upload-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+        }
+        h1 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        p {
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        #file-input {
+            display: none;
+        }
+        .upload-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        .upload-btn:hover {
+            background: #45a049;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .features {
+            margin: 20px 0;
+            text-align: left;
+            font-size: 14px;
+        }
+        .features li {
+            margin: 8px 0;
+        }
+        .highlight {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <h1>Fractali 3D Mandelbulb sincronizați pe muzică</h1>
+        <p>Încarcă un fișier audio pentru a vizualiza fractalul Mandelbulb sincronizat pe muzica.</p>
+        
+        <div class="features">
+            <strong>Caracteristici:</strong>
+            <ul>
+                <li>Reacție diferențiată în funcție de frecvențele joase și înalte</li>
+                <li>Sincronizare în timp real între sunet și fractal</li>
+                <li>Statistici vizuale care reflectă instant reacția la audio</li>
+            </ul>
+        </div>
+        
+        <form action="/" method="post" enctype="multipart/form-data">
+            <input type="file" id="file-input" name="file" accept=".mp3,.wav">
+            <label for="file-input" class="upload-btn">Alege fișierul audio</label>
+            <div id="file-name" style="margin-top: 10px; font-size: 14px;"></div>
+            <button type="submit" id="submit-btn" class="upload-btn" style="display:none; margin-top: 15px;">Încarcă și vizualizează</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : '';
+            document.getElementById('file-name').textContent = fileName;
+            document.getElementById('submit-btn').style.display = fileName ? 'inline-block' : 'none';
+        });
+    </script>
+</body>
+</html>
