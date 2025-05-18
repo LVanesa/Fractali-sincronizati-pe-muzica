@@ -14,8 +14,6 @@
 ## 💡 Descriere  
 Acest proiect îmbină arta vizuală generativă cu muzica, prin afișarea unui fractal 3D de tip **Mandelbulb**, care reacționează în timp real la frecvențele unui fișier audio. Am folosit **Python (Flask)** pentru backend și **WebGL** pentru randarea fractalului în browser. Scopul proiectului este de a oferi o reprezentare vizuală unică a muzicii, bazată pe algoritmi matematici și procesare audio în timp real.
 
-## 🎥 Demo  
-
 ---
 
 ## 🔍 Preview  
